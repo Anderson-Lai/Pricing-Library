@@ -23,7 +23,7 @@ void Time::Print(std::chrono::time_point<std::chrono::steady_clock> start,
 	Log::Println(std::format("Time taken: {}", timeElapsed));
 }
 
-void Time::Sleep(unsigned long long milliseconds)
+void Time::Sleep(const unsigned long long milliseconds)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }

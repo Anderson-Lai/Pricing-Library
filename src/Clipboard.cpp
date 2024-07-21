@@ -1,15 +1,8 @@
-#include "Program.hpp"
-#include <Windows.h>
+#include "Clipboard.h"
+#include "Windows.h"
 #include "Log.h"
-#include "curl/curl.h"
 
-Program& Program::GetInstance()
-{
-	static Program instance;
-	return instance;
-}
-
-void Program::WriteToClipboard(const std::string& text)
+void Clipboard::WriteToClipboard(const std::string& text)
 {
 	if (!OpenClipboard(nullptr))
 	{
@@ -55,16 +48,4 @@ void Program::WriteToClipboard(const std::string& text)
 
 	// clean up
 	CloseClipboard();
-}
-
-Program::Program()
-{
-	// initialize curl once when program starts
-	curl_global_init(CURL_GLOBAL_DEFAULT);
-}
-
-Program::~Program()
-{
-	// cleanup at end of program automatically
-	curl_global_cleanup();
 }
