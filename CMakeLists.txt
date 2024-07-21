@@ -14,11 +14,11 @@ else ()
 endif()
 
 # project name
-project(add_project_name)
-set(PROJECT_NAME add_project_name)
+project(Pricing-Library)
+set(PROJECT_NAME Pricing-Library)
 
 # dependencies
-# find_package(CURL REQUIRED)
+find_package(CURL REQUIRED)
 
 # set c++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -26,16 +26,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # include all .cpp files
 file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 
-# include all .h and .hpp files
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/project/")
+# include all .h, .hpp, and template files
+target_include_directories(${PROJECT_NAME} 
+	PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/public/"
+	PRIVATE 
+		"${CMAKE_CURRENT_SOURCE_DIR}/include/private/project/"
+		"${CMAKE_CURRENT_SOURCE_DIR}/include/private/json/"
+		"${CMAKE_CURRENT_SOURCE_DIR}/include/private/templates/"
+)
 
-#find_library(CURL_LIB NAMES curl REQUIRED PATHS "${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/")
-#target_link_libraries(${PROJECT_NAME} PRIVATE ${CURL_LIB} CURL::libcurl)
-
-#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-	#COMMAND ${CMAKE_COMMAND} -E copy_if_different
-	#"${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/libcurl.dll"
-	#<:TARGET_FILE_DIR:${PROJECT_NAME}>
-#)
+target_link_libraries(${PROJECT_NAME} PUBLIC CURL::libcurl)
