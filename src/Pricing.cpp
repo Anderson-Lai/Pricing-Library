@@ -37,7 +37,7 @@ void Pricing::Start()
 	updateFile.detach();
 	updateLbins.detach();
 
-	// allow for keep-alive probes to be sent
+	// allows for keep-alive probes to be sent
 	getFirstPage.CallApi("https://api.hypixel.net/v2/skyblock/auctions?page=0");
 
 	Log::Println("\nInitialization complete");
