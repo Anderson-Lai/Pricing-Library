@@ -14,8 +14,8 @@ else ()
 endif()
 
 # project name
-project(Pricing-Library)
-set(PROJECT_NAME Pricing-Library)
+project(pricinglibrary)
+set(PROJECT_NAME pricinglibrary)
 
 # dependencies
 find_package(CURL REQUIRED)
