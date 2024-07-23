@@ -38,3 +38,12 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC CURL::libcurl)
+
+if (MSVC)
+	target_compile_options(${PROJECT_NAME} PRIVATE
+		$<$<CONFIG:Debug>:/MDd>
+		$<$<CONFIG:Release>:/MDd>
+	)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_compile_options(${PROJECT_NAME} PRIVATE -pthread)
+endif()
