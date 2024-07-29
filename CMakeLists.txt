@@ -1,24 +1,24 @@
-﻿cmake_minimum_required(VERSION 3.12)
+﻿cmake_minimum_required(VERSION 3.20)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+include(FetchContent)
 
 # target vcpkg
 if (DEFINED ENV{VCPKG_ROOT_DIRECTORY})
 	set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT_DIRECTORY}/scripts/buildsystems/vcpkg.cmake")
+	find_package(CURL REQUIRED)
 else ()
-	message(FATAL_ERROR "Environment variable VCPKG_ROOT_DIRECTORY is not defined. Point it to where vcpkg is installed")
+	message("Environment variable VCPKG_ROOT_DIRECTORY is not defined. Fetching dependencies from source")
+	FetchContent_Declare(
+		CURL 
+		GIT_REPOSITORY https://github.com/curl/curl.git
+		GIT_TAG master
+	)
+	FetchContent_MakeAvailable(CURL)
 endif()
 
 # project name
 project(pricinglibrary)
 set(PROJECT_NAME pricinglibrary)
-
-# dependencies
-find_package(CURL REQUIRED)
 
 # set c++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -40,10 +40,10 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PUBLIC CURL::libcurl)
 
 if (MSVC)
-	target_compile_options(${PROJECT_NAME} PRIVATE
+	target_compile_options(${PROJECT_NAME} PUBLIC 
+	$<$<CONFIG:Release>:/MD>
 		$<$<CONFIG:Debug>:/MDd>
-		$<$<CONFIG:Release>:/MD>
 	)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(${PROJECT_NAME} PRIVATE -pthread)
+	target_compile_options(${PROJECT_NAME} PUBLIC -pthread)
 endif()

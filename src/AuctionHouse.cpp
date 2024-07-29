@@ -6,6 +6,7 @@
 #include "File.hpp"
 #include "Conversions.h"
 #include "Log.h"
+#include <mutex>
 
 using json = nlohmann::json;
 
