@@ -2,12 +2,20 @@
 
 include(FetchContent)
 
-# target vcpkg
+# use vcpkg
 if (DEFINED ENV{VCPKG_ROOT_DIRECTORY})
 	set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT_DIRECTORY}/scripts/buildsystems/vcpkg.cmake")
-	find_package(CURL REQUIRED)
 else ()
 	message("Environment variable VCPKG_ROOT_DIRECTORY is not defined. Fetching dependencies from source")
+endif()
+
+# project name
+project(pricinglibrary)
+
+# fetching dependencies
+if (DEFINED ENV{VCPKG_ROOT_DIRECTORY})
+	find_package(CURL REQUIRED)
+else()
 	FetchContent_Declare(
 		CURL 
 		GIT_REPOSITORY https://github.com/curl/curl.git
@@ -15,10 +23,6 @@ else ()
 	)
 	FetchContent_MakeAvailable(CURL)
 endif()
-
-# project name
-project(pricinglibrary)
-set(PROJECT_NAME pricinglibrary)
 
 # set c++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -41,7 +45,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC CURL::libcurl)
 
 if (MSVC)
 	target_compile_options(${PROJECT_NAME} PUBLIC 
-	$<$<CONFIG:Release>:/MD>
+		$<$<CONFIG:Release>:/MD>
 		$<$<CONFIG:Debug>:/MDd>
 	)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
